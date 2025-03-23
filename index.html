@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        /*CSS for styling, alignment, etc. */
+        body {
+            text-align: center;
+            background-color: rgb(216, 209, 209);
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+            margin: 20px;
+        }
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: #8fa1ad;
+            text-align: center;
+            font-size: 2rem;
+            color: black;
+            cursor: pointer;
+            line-height: 100px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+        #status {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        #restart {
+            padding: 10px 15px;
+            font-size: 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        #restart:hover {
+            background-color: rgb(105, 104, 179);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Memory Game</h1>
+        <p id="status">Matched Pairs: 0</p>
+        <div id="game-board"></div>
+        <button id="restart">Restart Game</button>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const gameBoard = document.getElementById("game-board");
+            const statusText = document.getElementById("status");
+            const restartButton = document.getElementById("restart");
+
+            /*Card value array*/
+            const cardValues = ["🐵", "🐋", "🐊", "🦄", "🐵", "🐋", "🐊", "🦄"];
+            let flippedCards = [];
+            let matchedPairs = 0; 
+
+            /*Randomly shuffling the cards*/
+            function shuffleCards() {
+                cardValues.sort(() => Math.random() - 0.5);
+            }
+
+            /*Creating the cards & board game*/
+            function createBoard() {
+                gameBoard.innerHTML = "";
+                shuffleCards();
+                cardValues.forEach(value => {
+                    const card = document.createElement("div");
+                    card.classList.add("card");
+                    card.dataset.value = value;
+                    card.textContent = "?";
+                    card.addEventListener("click", () => flipCard(card));
+                    gameBoard.appendChild(card);
+                });
+            }
+
+            /*Card flip logic*/
+            function flipCard(card) {
+                if (flippedCards.length < 2 && !flippedCards.includes(card)) {
+                    card.textContent = card.dataset.value;
+                    flippedCards.push(card);
+
+                    /*Checks for match with flipped cards*/
+                    if (flippedCards.length === 2) {
+                        setTimeout(checkMatch, 500);
+                    }
+                }
+            }
+
+            /*Checking if two flipped cards match*/
+            function checkMatch() {
+                if (flippedCards[0].dataset.value === flippedCards[1].dataset.value) {
+                    flippedCards = [];
+                    matchedPairs++;
+                    statusText.textContent = `Matched Pairs: ${matchedPairs}`;
+                    /*Victory if all cards are matched*/
+                    if (matchedPairs === cardValues.length / 2) {
+                        statusText.textContent = "Congrats, you won!";
+                    }
+                    /*If no match, cards flipped back over*/
+                } else {
+                    flippedCards.forEach(card => {
+                        card.textContent = "?";
+                        card.classList.remove("flipped");
+                    });
+                    flippedCards = [];
+                }
+            }
+
+            /*Restart button logic*/
+            restartButton.addEventListener("click", () => {
+                matchedPairs = 0;
+                statusText.textContent = "Matched Pairs: 0";
+                createBoard();
+            });
+
+            /*Creation of board game at start*/
+            createBoard();
+        });
+    </script>
+</body>
+</html>
