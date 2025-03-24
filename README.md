@@ -2,7 +2,7 @@
 
 I have created a basic memory matching game. The user is presented with eight cards with four hidden matching pairs established in an array. As the user finds matching pairs, the status counter increases until the game is won. The user is able to restart the game and reset the board at any time. 
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://www.youtube.com/watch?v=l29zdDUK0Ic)
 
 # Development Environment
 
